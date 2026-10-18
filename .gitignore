@@ -1,0 +1,6 @@
+kubeconfig*
+*.key
+*.pem
+*.crt
+cortx-license-bundle.yaml
+params.json

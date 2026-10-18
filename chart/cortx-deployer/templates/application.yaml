@@ -1,0 +1,60 @@
+apiVersion: app.k8s.io/v1beta1
+kind: Application
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    {{- with .Files.Get "logo.png" }}
+    kubernetes-engine.cloud.google.com/icon: >-
+      data:image/png;base64,{{ . | b64enc }}
+    {{- end }}
+    marketplace.cloud.google.com/deploy-info: '{"partner_id": "xnode-public", "product_id": "xnode-cortx-ai-control-plane-byol", "partner_name": "XNODE INC."}'
+  labels:
+    app.kubernetes.io/name: {{ .Release.Name }}
+spec:
+  descriptor:
+    type: Xnode Cortx
+    version: {{ .Chart.AppVersion | quote }}
+    description: |-
+      Xnode Cortx is an AI control plane for agentic AI that runs inside your own network on GKE:
+      agent orchestration, MCP tools, guardrails, RBAC and observability.
+    maintainers:
+      - name: XNODE INC.
+        url: https://www.xnode.ai
+    links:
+      - description: Xnode Cortx
+        url: https://www.xnode.ai/platform
+    notes: |-
+      # Next steps
+
+      The installer pod (`{{ .Release.Name }}-installer`) installs Cortx with Helm into the
+      `cortx-platform`, `apps` and supporting namespaces. It takes 15-20 minutes.
+
+      Follow progress:
+
+      ```shell
+      kubectl logs -f deployment/{{ .Release.Name }}-installer -n {{ .Release.Namespace }}
+      ```
+
+      When it finishes, the log prints the ingress IP. Create a wildcard DNS record
+      `*.{{ .Values.domain }}` pointing to that IP, then open `https://{{ .Values.webHost | default (printf "%s.%s" .Values.envName .Values.domain) }}`.
+  info:
+    - name: Domain
+      value: {{ .Values.domain | quote }}
+    - name: Ingress IP
+      type: Reference
+      valueFrom:
+        serviceRef:
+          name: traefik
+          namespace: cortx-platform
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Release.Name }}
+  addOwnerRef: true
+  # Only the deployer's own objects (all in this namespace). Cortx itself is installed by Helm
+  # across several namespaces and must NOT get an owner reference to this Application.
+  componentKinds:
+    - group: apps/v1
+      kind: Deployment
+    - group: v1
+      kind: Secret

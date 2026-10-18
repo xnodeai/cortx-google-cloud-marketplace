@@ -1,0 +1,12 @@
+Copyright (c) 2026 XNODE INC. All rights reserved.
+
+Xnode Cortx is proprietary software of XNODE INC. Use is governed by the Xnode Cortx
+End User License Agreement: https://www.xnode.ai/legal-eula
+
+On Google Cloud Marketplace, Xnode Cortx is offered as bring your own license (Schedule A of
+the Agreement). Obtain a license from XNODE at https://www.xnode.ai/get-license
+(licensing@xnode.ai).
+
+Xnode Cortx includes third party and open source components (for example PostgreSQL,
+Redis, RabbitMQ, MinIO, Neo4j, Qdrant, HashiCorp Vault, NATS, Temporal, Prometheus,
+Grafana, Loki, Tempo and Traefik), each licensed under its own terms.
